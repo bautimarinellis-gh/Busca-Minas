@@ -8,7 +8,7 @@ var MINAS = 10;
 var tablero = [];
 
 // Inicializa el tablero vacío
-function crearTablero() {
+function CrearTablero() {
     tablero = [];
     for (var i = 0; i < FILAS; i++) {
         var fila = [];
@@ -25,7 +25,7 @@ function crearTablero() {
 }
 
 // Coloca minas aleatoriamente
-function colocarMinas() {
+function ColocarMinas() {
     var minasColocadas = 0;
     while (minasColocadas < MINAS) {
         var fila = Math.floor(Math.random() * FILAS);
@@ -38,7 +38,7 @@ function colocarMinas() {
 }
 
 // Calcula los números de minas vecinas para cada celda
-function calcularNumeros() {
+function CalcularNumeros() {
     for (var i = 0; i < FILAS; i++) {
         for (var j = 0; j < COLUMNAS; j++) {
             if (tablero[i][j].mina) {
@@ -62,7 +62,7 @@ function calcularNumeros() {
 }
 
 // Abrir celda (click izquierdo)
-function abrirCelda(fila, col) {
+function AbrirCelda(fila, col) {
     var celda = tablero[fila][col];
     if (celda.abierta || celda.bandera) return;
     celda.abierta = true;
@@ -72,7 +72,7 @@ function abrirCelda(fila, col) {
     if (celda.mina) {
         boton.className += ' mina';
         boton.innerHTML = '💣';
-        mostrarTodasLasMinas();
+        MostrarTodasLasMinas();
         setTimeout(function() { alert('¡Perdiste!'); }, 100);
         return;
     }
@@ -87,7 +87,7 @@ function abrirCelda(fila, col) {
                 var ni = fila + dx;
                 var nj = col + dy;
                 if (ni >= 0 && ni < FILAS && nj >= 0 && nj < COLUMNAS) {
-                    if (!tablero[ni][nj].abierta) abrirCelda(ni, nj);
+                    if (!tablero[ni][nj].abierta) AbrirCelda(ni, nj);
                 }
             }
         }
@@ -95,7 +95,7 @@ function abrirCelda(fila, col) {
 }
 
 // Mostrar todas las minas al perder
-function mostrarTodasLasMinas() {
+function MostrarTodasLasMinas() {
     for (var i = 0; i < FILAS; i++) {
         for (var j = 0; j < COLUMNAS; j++) {
             if (tablero[i][j].mina) {
@@ -109,7 +109,7 @@ function mostrarTodasLasMinas() {
 }
 
 // Poner o quitar bandera (click derecho)
-function toggleBandera(fila, col, e) {
+function ToggleBandera(fila, col, e) {
     e.preventDefault();
     var celda = tablero[fila][col];
     if (celda.abierta) return;
@@ -125,15 +125,15 @@ function toggleBandera(fila, col, e) {
 }
 
 // Agregar listeners a los botones
-function agregarListeners() {
+function AgregarListeners() {
     var botones = document.getElementsByClassName('celda');
     for (var i = 0; i < botones.length; i++) {
         (function(boton) {
             var fila = parseInt(boton.getAttribute('data-fila'));
             var col = parseInt(boton.getAttribute('data-col'));
             boton.onmousedown = function(e) {
-                if (e.button === 0) abrirCelda(fila, col);
-                if (e.button === 2) toggleBandera(fila, col, e);
+                if (e.button === 0) AbrirCelda(fila, col);
+                if (e.button === 2) ToggleBandera(fila, col, e);
             };
             boton.oncontextmenu = function(e) { e.preventDefault(); };
         })(botones[i]);
@@ -141,7 +141,7 @@ function agregarListeners() {
 }
 
 // Renderiza el tablero en el HTML
-function renderizarTablero() {
+function RenderizarTablero() {
     var contenedor = document.getElementById('tablero');
     contenedor.innerHTML = '';
     var tabla = document.createElement('table');
@@ -161,24 +161,57 @@ function renderizarTablero() {
         tabla.appendChild(fila);
     }
     contenedor.appendChild(tabla);
-    agregarListeners();
+    AgregarListeners();
 }
 
 // Inicializa una nueva partida
-function nuevaPartida() {
-    crearTablero();
-    colocarMinas();
-    calcularNumeros();
-    renderizarTablero();
+function NuevaPartida() {
+    CrearTablero();
+    ColocarMinas();
+    CalcularNumeros();
+    RenderizarTablero();
 }
 
-// Llamar a nuevaPartida() para iniciar el juego al cargar
-nuevaPartida();
+// Llamar a NuevaPartida() para iniciar el juego al cargar
+NuevaPartida();
 
-// Botón de reinicio
+// --- Lógica para nombre de usuario y validación ---
+var inputNombre = document.getElementById('nombre-jugador');
+var btnComenzar = document.getElementById('comenzar-juego');
+var errorNombre = document.getElementById('error-nombre');
+var contenedorTablero = document.getElementById('tablero');
 var btnReiniciar = document.getElementById('reiniciar');
+
+function MostrarTableroYReiniciar() {
+    contenedorTablero.style.display = '';
+    btnReiniciar.style.display = '';
+}
+
+function OcultarTableroYReiniciar() {
+    contenedorTablero.style.display = 'none';
+    btnReiniciar.style.display = 'none';
+}
+
+OcultarTableroYReiniciar();
+
+if (btnComenzar) {
+    btnComenzar.onclick = function() {
+        var nombre = inputNombre.value.replace(/\s+/g, '');
+        if (nombre.length >= 3) {
+            errorNombre.style.display = 'none';
+            MostrarTableroYReiniciar();
+            NuevaPartida();
+            document.getElementById('nombre-container').style.display = 'none';
+        } else {
+            errorNombre.style.display = 'block';
+            OcultarTableroYReiniciar();
+        }
+    };
+}
+
+// Modifico el botón de reinicio para mostrar el input de nombre si se desea reiniciar todo
 if (btnReiniciar) {
     btnReiniciar.onclick = function() {
-        nuevaPartida();
+        NuevaPartida();
     };
 }
