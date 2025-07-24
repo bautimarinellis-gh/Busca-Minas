@@ -29,6 +29,7 @@
 
             <button type="submit">Enviar</button>
         </form>
+        <div id="mensaje-enviado" style="display:none; color:green; margin-top:20px; font-weight:bold;">¡Mensaje enviado! Revisa tu aplicación de correo.</div>
     </main>
     <script>
         document.getElementById('contacto-form').addEventListener('submit', function(e) {
@@ -38,6 +39,7 @@
             var mensaje = document.getElementById('mensaje').value;
             var subject = encodeURIComponent('Contacto desde Busca-Minas');
             var body = encodeURIComponent('Nombre: ' + nombre + '\nEmail: ' + email + '\nMensaje: ' + mensaje);
+            document.getElementById('mensaje-enviado').style.display = 'block';
             window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
         });
     </script>
