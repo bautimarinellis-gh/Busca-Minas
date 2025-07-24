@@ -19,29 +19,21 @@
         <h1>Contacto</h1>
         <form id="contacto-form">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" name="nombre">
+            <div id="error-nombre"></div>
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="text" id="email" name="email">
+            <div id="error-email"></div>
 
             <label for="mensaje">Mensaje:</label>
-            <textarea id="mensaje" name="mensaje" required></textarea>
+            <textarea id="mensaje" name="mensaje"></textarea>
+            <div id="error-mensaje"></div>
 
             <button type="submit">Enviar</button>
         </form>
-        <div id="mensaje-enviado" style="display:none; color:green; margin-top:20px; font-weight:bold;">¡Mensaje enviado! Revisa tu aplicación de correo.</div>
+        <div id="mensaje-enviado">Revisa tu aplicación de correo.</div>
     </main>
-    <script>
-        document.getElementById('contacto-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var nombre = document.getElementById('nombre').value;
-            var email = document.getElementById('email').value;
-            var mensaje = document.getElementById('mensaje').value;
-            var subject = encodeURIComponent('Contacto desde Busca-Minas');
-            var body = encodeURIComponent('Nombre: ' + nombre + '\nEmail: ' + email + '\nMensaje: ' + mensaje);
-            document.getElementById('mensaje-enviado').style.display = 'block';
-            window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
-        });
-    </script>
+    <script src="validaciones_contacto.js"></script>
 </body>
 </html> 
