@@ -73,7 +73,7 @@ function AbrirCelda(fila, col) {
         boton.className += ' mina';
         boton.innerHTML = '💣';
         MostrarTodasLasMinas();
-        setTimeout(function() { alert('¡Perdiste!'); }, 100);
+        setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
         return;
     }
     if (celda.numero > 0) {
@@ -91,6 +91,10 @@ function AbrirCelda(fila, col) {
                 }
             }
         }
+    }
+    // Verificar si el jugador ganó
+    if (VerificarVictoria()) {
+        setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
     }
 }
 
@@ -214,4 +218,36 @@ if (btnReiniciar) {
     btnReiniciar.onclick = function() {
         NuevaPartida();
     };
+}
+
+// Funciones para mostrar y ocultar el modal de mensaje
+function MostrarModal(mensaje) {
+    var modal = document.getElementById('modal-mensaje');
+    var texto = document.getElementById('modal-texto');
+    texto.textContent = mensaje;
+    modal.style.display = 'flex';
+}
+
+function OcultarModal() {
+    var modal = document.getElementById('modal-mensaje');
+    modal.style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var btnCerrar = document.getElementById('modal-cerrar');
+    if (btnCerrar) {
+        btnCerrar.onclick = OcultarModal;
+    }
+});
+
+function VerificarVictoria() {
+    for (var i = 0; i < FILAS; i++) {
+        for (var j = 0; j < COLUMNAS; j++) {
+            var celda = tablero[i][j];
+            if (!celda.mina && !celda.abierta) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

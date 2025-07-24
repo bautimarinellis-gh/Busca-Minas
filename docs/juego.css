@@ -89,3 +89,40 @@
     color: #fff;
     transform: scale(1.05);
 } 
+
+/* Modal para mensajes */
+#modal-mensaje {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+#modal-mensaje .modal-contenido {
+    background: #fff;
+    padding: 32px 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+    min-width: 260px;
+    text-align: center;
+    position: relative;
+}
+#modal-texto {
+    font-size: 1.3em;
+    color: #222;
+}
+#modal-cerrar {
+    margin-top: 18px;
+    padding: 8px 24px;
+    background: #009688;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+} 
