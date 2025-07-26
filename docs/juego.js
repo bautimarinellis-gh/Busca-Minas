@@ -4,6 +4,11 @@ var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
 
+// Variables para el temporizador
+var temporizadorInterval;
+var tiempoTranscurrido = 0;
+var juegoIniciado = false;
+
 // Tablero lógico: cada celda será un objeto {mina: bool, abierta: bool, bandera: bool, numero: int}
 var tablero = [];
 
@@ -61,8 +66,47 @@ function CalcularNumeros() {
     }
 }
 
+// Funciones para el temporizador
+function IniciarTemporizador() {
+    if (!juegoIniciado) {
+        juegoIniciado = true;
+        tiempoTranscurrido = 0;
+        ActualizarTemporizador();
+        temporizadorInterval = setInterval(function() {
+            tiempoTranscurrido++;
+            ActualizarTemporizador();
+        }, 1000);
+    }
+}
+
+function PararTemporizador() {
+    if (temporizadorInterval) {
+        clearInterval(temporizadorInterval);
+        temporizadorInterval = null;
+    }
+}
+
+function ActualizarTemporizador() {
+    var minutos = Math.floor(tiempoTranscurrido / 60);
+    var segundos = tiempoTranscurrido % 60;
+    var tiempoFormateado = 'Tiempo: ' + 
+        (minutos < 10 ? '0' : '') + minutos + ':' + 
+        (segundos < 10 ? '0' : '') + segundos;
+    document.getElementById('temporizador').textContent = tiempoFormateado;
+}
+
+function ReiniciarTemporizador() {
+    PararTemporizador();
+    juegoIniciado = false;
+    tiempoTranscurrido = 0;
+    ActualizarTemporizador();
+}
+
 // Abrir celda (click izquierdo)
 function AbrirCelda(fila, col) {
+    // Iniciar temporizador en la primera celda abierta
+    IniciarTemporizador();
+    
     var celda = tablero[fila][col];
     if (celda.abierta || celda.bandera) return;
     celda.abierta = true;
@@ -73,6 +117,7 @@ function AbrirCelda(fila, col) {
         boton.className += ' mina';
         boton.innerHTML = '💣';
         MostrarTodasLasMinas();
+        PararTemporizador();
         setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
         return;
     }
@@ -94,6 +139,7 @@ function AbrirCelda(fila, col) {
     }
     // Verificar si el jugador ganó
     if (VerificarVictoria()) {
+        PararTemporizador();
         setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
     }
 }
@@ -174,6 +220,7 @@ function NuevaPartida() {
     ColocarMinas();
     CalcularNumeros();
     RenderizarTablero();
+    ReiniciarTemporizador();
 }
 
 // Llamar a NuevaPartida() para iniciar el juego al cargar
@@ -189,11 +236,13 @@ var btnReiniciar = document.getElementById('reiniciar');
 function MostrarTableroYReiniciar() {
     contenedorTablero.style.display = '';
     btnReiniciar.style.display = '';
+    document.getElementById('temporizador').style.display = '';
 }
 
 function OcultarTableroYReiniciar() {
     contenedorTablero.style.display = 'none';
     btnReiniciar.style.display = 'none';
+    document.getElementById('temporizador').style.display = 'none';
 }
 
 OcultarTableroYReiniciar();
