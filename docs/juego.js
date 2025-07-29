@@ -387,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var btnMedio = document.getElementById('nivel-medio');
     var btnDificil = document.getElementById('nivel-dificil');
     var btnCambiarNivel = document.getElementById('cambiar-nivel');
+    var enlaceInicio = document.getElementById('enlace-inicio');
     
     if (btnFacil) {
         btnFacil.onclick = function() {
@@ -412,6 +413,21 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nombre-container').style.display = '';
             PararTemporizador();
             juegoIniciado = false;
+        };
+    }
+    
+    if (enlaceInicio) {
+        enlaceInicio.onclick = function(e) {
+            e.preventDefault();
+            OcultarTableroYReiniciar();
+            document.getElementById('nombre-container').style.display = '';
+            document.getElementById('selector-nivel').style.display = '';
+            PararTemporizador();
+            juegoIniciado = false;
+            // Limpiar el input del nombre
+            document.getElementById('nombre-jugador').value = '';
+            // Ocultar mensaje de error si está visible
+            document.getElementById('error-nombre').style.display = 'none';
         };
     }
 });
