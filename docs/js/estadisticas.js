@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td>${p.hora}</td>
             <td>${p.duracion}</td>
             <td class="estado-${p.estado}">${p.estado}</td>
+            <td>${p.dificultad}</td>
         `;
         tablaHistorial.appendChild(fila);
     });
@@ -36,7 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <td>${p.nombre}</td>
             <td>${p.puntaje}</td>
             <td>${p.duracion}</td>
+            <td>${p.dificultad}</td>
             <td>${p.fecha}</td>
+           
+
         `;
         tablaRanking.appendChild(fila);
     });

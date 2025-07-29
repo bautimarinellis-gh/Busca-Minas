@@ -148,7 +148,7 @@ function AbrirCelda(fila, col) {
         var sonidoExplocion = new Audio("sonidos/explocion.mp3")
         sonidoExplocion.play()
         setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
-       GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "perdido");
+       GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "perdido", NIVEL_ACTUAL);
 
         return;
     }
@@ -174,7 +174,7 @@ function AbrirCelda(fila, col) {
         var sonidoVictoria = new Audio("sonidos/victoria.mp3");
         sonidoVictoria.play();
         setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
-        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "ganado");
+        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "ganado", NIVEL_ACTUAL);
     }
 }
 
@@ -484,15 +484,16 @@ function VerificarVictoria() {
     }
     return true;
 }
-function GuardarPartida(nombre, tiempoSegundos, estado) {
+function GuardarPartida(nombre, tiempoSegundos, estado, dificultad) {
     var fecha = new Date();
     var partida = {
         nombre: nombre,
-        puntaje: CalcularPuntaje(tiempoSegundos, estado), // función sugerida abajo
+        puntaje: CalcularPuntaje(tiempoSegundos, estado, dificultad), // función sugerida abajo
         fecha: fecha.toLocaleDateString(),
         hora: fecha.toLocaleTimeString(),
         duracion: tiempoSegundos,
-        estado: estado // "ganado" o "perdido"
+        estado: estado, // "ganado" o "perdido"
+        dificultad: dificultad 
     };
 
     var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
@@ -530,10 +531,21 @@ function ActualizarRanking() {
         lista.appendChild(item);
     });
 }
-function CalcularPuntaje(tiempo, estado) {
+function CalcularPuntaje(tiempo, estado, dificultad) {
     if (estado === "perdido") return 0;
-    return Math.max(1000 - tiempo, 100); // A menor tiempo, mayor puntaje
+
+    var basePuntaje = Math.max((1000 - tiempo), 100);
+    var multiplicador = 1;
+
+    if (dificultad === "medio") {
+        multiplicador = 2;
+    } else if (dificultad === "dificil") {
+        multiplicador = 3;
+    }
+
+    return basePuntaje * multiplicador;
 }
+
 // Cambiar entre modo claro y oscuro
 document.getElementById('cambiar-tema').onclick = function () {
     document.body.classList.toggle('tema-oscuro');
