@@ -4,6 +4,193 @@ var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
 var NIVEL_ACTUAL = 'facil';
+// Variables para el temporizador
+var temporizadorInterval;
+var tiempoTranscurrido = 0;
+var juegoIniciado = false;
+
+// Tablero lógico: cada celda será un objeto {mina: bool, abierta: bool, bandera: bool, numero: int}
+var tablero = [];
+
+// Inicializa el tablero vacío
+function CrearTablero() {
+    tablero = [];
+    for (var i = 0; i < FILAS; i++) {
+        var fila = [];
+        for (var j = 0; j < COLUMNAS; j++) {
+            fila.push({
+                mina: false,
+                abierta: false,
+                bandera: false,
+                numero: 0
+            });
+        }
+        tablero.push(fila);
+    }
+}
+
+
+// Coloca minas aleatoriamente
+function ColocarMinas() {
+    var minasColocadas = 0;
+    var intentosMaximos = FILAS * COLUMNAS * 2; // Evitar bucles infinitos
+    var intentos = 0;
+    
+    while (minasColocadas < MINAS && intentos < intentosMaximos) {
+        var fila = Math.floor(Math.random() * FILAS);
+        var col = Math.floor(Math.random() * COLUMNAS);
+        if (!tablero[fila][col].mina) {
+            tablero[fila][col].mina = true;
+            minasColocadas++;
+        }
+        intentos++;
+    }
+    
+    // Si no se pudieron colocar todas las minas, ajustar el número
+    if (minasColocadas < MINAS) {
+        console.warn('No se pudieron colocar todas las minas. Se colocaron ' + minasColocadas + ' de ' + MINAS);
+        MINAS = minasColocadas;
+    }
+}
+
+// Calcula los números de minas vecinas para cada celda
+function CalcularNumeros() {
+    for (var i = 0; i < FILAS; i++) {
+        for (var j = 0; j < COLUMNAS; j++) {
+            if (tablero[i][j].mina) {
+                tablero[i][j].numero = -1;
+                continue;
+            }
+            var minasVecinas = 0;
+            for (var dx = -1; dx <= 1; dx++) {
+                for (var dy = -1; dy <= 1; dy++) {
+                    if (dx === 0 && dy === 0) continue;
+                    var ni = i + dx;
+                    var nj = j + dy;
+                    if (ni >= 0 && ni < FILAS && nj >= 0 && nj < COLUMNAS) {
+                        if (tablero[ni][nj].mina) minasVecinas++;
+                    }
+                }
+            }
+            tablero[i][j].numero = minasVecinas;
+        }
+    }
+}
+
+
+// Funciones para el temporizador
+function IniciarTemporizador() {
+    if (!juegoIniciado) {
+        juegoIniciado = true;
+        tiempoTranscurrido = 0;
+        ActualizarTemporizador();
+        temporizadorInterval = setInterval(function() {
+            tiempoTranscurrido++;
+            ActualizarTemporizador();
+        }, 1000);
+    }
+}
+
+function PararTemporizador() {
+    if (temporizadorInterval) {
+        clearInterval(temporizadorInterval);
+        temporizadorInterval = null;
+    }
+}
+
+function ActualizarTemporizador() {
+    var minutos = Math.floor(tiempoTranscurrido / 60);
+    var segundos = tiempoTranscurrido % 60;
+    var tiempoFormateado = 'Tiempo: ' + 
+        (minutos < 10 ? '0' : '') + minutos + ':' + 
+        (segundos < 10 ? '0' : '') + segundos;
+    document.getElementById('temporizador').textContent = tiempoFormateado;
+}
+
+function ReiniciarTemporizador() {
+    PararTemporizador();
+    juegoIniciado = false;
+    tiempoTranscurrido = 0;
+    ActualizarTemporizador();
+}
+
+// Función para calcular y actualizar el contador de minas restantes
+function ActualizarContadorMinas() {
+    var banderasPlantadas = 0;
+    for (var i = 0; i < FILAS; i++) {
+        for (var j = 0; j < COLUMNAS; j++) {
+            if (tablero[i][j].bandera) {
+                banderasPlantadas++;
+            }
+        }
+    }
+    var minasRestantes = MINAS - banderasPlantadas;
+    var textoContador = 'Minas restantes: ' + minasRestantes;
+    document.getElementById('contador-minas').textContent = textoContador;
+}
+
+// Abrir celda (click izquierdo)
+function AbrirCelda(fila, col) {
+    // Iniciar temporizador en la primera celda abierta
+    IniciarTemporizador();
+    
+    var celda = tablero[fila][col];
+    if (celda.abierta || celda.bandera) return;
+    celda.abierta = true;
+    var boton = document.querySelector('button[data-fila="' + fila + '"][data-col="' + col + '"]');
+    boton.className = 'celda abierta';
+    boton.disabled = true;
+    if (celda.mina) {
+        boton.className += ' mina';
+        boton.innerHTML = '💣';
+        MostrarTodasLasMinas();
+        PararTemporizador();
+        var sonidoExplocion = new Audio("sonidos/explocion.mp3")
+        sonidoExplocion.play()
+        setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
+       GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "perdido");
+
+        return;
+    }
+    if (celda.numero > 0) {
+        boton.innerHTML = celda.numero;
+    } else {
+        boton.innerHTML = '';
+        // Abrir celdas vecinas si es 0
+        for (var dx = -1; dx <= 1; dx++) {
+            for (var dy = -1; dy <= 1; dy++) {
+                if (dx === 0 && dy === 0) continue;
+                var ni = fila + dx;
+                var nj = col + dy;
+                if (ni >= 0 && ni < FILAS && nj >= 0 && nj < COLUMNAS) {
+                    if (!tablero[ni][nj].abierta) AbrirCelda(ni, nj);
+                }
+            }
+        }
+    }
+    // Verificar si el jugador ganó
+    if (VerificarVictoria()) {
+        PararTemporizador();
+        var sonidoVictoria = new Audio("sonidos/victoria.mp3");
+        sonidoVictoria.play();
+        setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
+        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "ganado");
+    }
+}
+
+// Mostrar todas las minas al perder
+function MostrarTodasLasMinas() {
+    for (var i = 0; i < FILAS; i++) {
+        for (var j = 0; j < COLUMNAS; j++) {
+            if (tablero[i][j].mina) {
+                var boton = document.querySelector('button[data-fila="' + i + '"][data-col="' + j + '"]');
+                boton.className = 'celda abierta mina';
+                boton.innerHTML = '💣';
+                boton.disabled = true;
+            }
+        }
+    }
+}
 
 // Función para cambiar el nivel de dificultad
 function CambiarNivel(nivel) {
@@ -79,190 +266,6 @@ function ProbarValidacionMinas() {
     console.log('=== Fin de pruebas ===');
 }
 
-// Variables para el temporizador
-var temporizadorInterval;
-var tiempoTranscurrido = 0;
-var juegoIniciado = false;
-
-// Tablero lógico: cada celda será un objeto {mina: bool, abierta: bool, bandera: bool, numero: int}
-var tablero = [];
-
-// Inicializa el tablero vacío
-function CrearTablero() {
-    tablero = [];
-    for (var i = 0; i < FILAS; i++) {
-        var fila = [];
-        for (var j = 0; j < COLUMNAS; j++) {
-            fila.push({
-                mina: false,
-                abierta: false,
-                bandera: false,
-                numero: 0
-            });
-        }
-        tablero.push(fila);
-    }
-}
-
-// Coloca minas aleatoriamente
-function ColocarMinas() {
-    var minasColocadas = 0;
-    var intentosMaximos = FILAS * COLUMNAS * 2; // Evitar bucles infinitos
-    var intentos = 0;
-    
-    while (minasColocadas < MINAS && intentos < intentosMaximos) {
-        var fila = Math.floor(Math.random() * FILAS);
-        var col = Math.floor(Math.random() * COLUMNAS);
-        if (!tablero[fila][col].mina) {
-            tablero[fila][col].mina = true;
-            minasColocadas++;
-        }
-        intentos++;
-    }
-    
-    // Si no se pudieron colocar todas las minas, ajustar el número
-    if (minasColocadas < MINAS) {
-        console.warn('No se pudieron colocar todas las minas. Se colocaron ' + minasColocadas + ' de ' + MINAS);
-        MINAS = minasColocadas;
-    }
-}
-
-// Calcula los números de minas vecinas para cada celda
-function CalcularNumeros() {
-    for (var i = 0; i < FILAS; i++) {
-        for (var j = 0; j < COLUMNAS; j++) {
-            if (tablero[i][j].mina) {
-                tablero[i][j].numero = -1;
-                continue;
-            }
-            var minasVecinas = 0;
-            for (var dx = -1; dx <= 1; dx++) {
-                for (var dy = -1; dy <= 1; dy++) {
-                    if (dx === 0 && dy === 0) continue;
-                    var ni = i + dx;
-                    var nj = j + dy;
-                    if (ni >= 0 && ni < FILAS && nj >= 0 && nj < COLUMNAS) {
-                        if (tablero[ni][nj].mina) minasVecinas++;
-                    }
-                }
-            }
-            tablero[i][j].numero = minasVecinas;
-        }
-    }
-}
-
-// Funciones para el temporizador
-function IniciarTemporizador() {
-    if (!juegoIniciado) {
-        juegoIniciado = true;
-        tiempoTranscurrido = 0;
-        ActualizarTemporizador();
-        temporizadorInterval = setInterval(function() {
-            tiempoTranscurrido++;
-            ActualizarTemporizador();
-        }, 1000);
-    }
-}
-
-function PararTemporizador() {
-    if (temporizadorInterval) {
-        clearInterval(temporizadorInterval);
-        temporizadorInterval = null;
-    }
-}
-
-function ActualizarTemporizador() {
-    var minutos = Math.floor(tiempoTranscurrido / 60);
-    var segundos = tiempoTranscurrido % 60;
-    var tiempoFormateado = 'Tiempo: ' + 
-        (minutos < 10 ? '0' : '') + minutos + ':' + 
-        (segundos < 10 ? '0' : '') + segundos;
-    document.getElementById('temporizador').textContent = tiempoFormateado;
-}
-
-function ReiniciarTemporizador() {
-    PararTemporizador();
-    juegoIniciado = false;
-    tiempoTranscurrido = 0;
-    ActualizarTemporizador();
-}
-
-// Función para calcular y actualizar el contador de minas restantes
-function ActualizarContadorMinas() {
-    var banderasPlantadas = 0;
-    for (var i = 0; i < FILAS; i++) {
-        for (var j = 0; j < COLUMNAS; j++) {
-            if (tablero[i][j].bandera) {
-                banderasPlantadas++;
-            }
-        }
-    }
-    var minasRestantes = MINAS - banderasPlantadas;
-    var textoContador = 'Minas restantes: ' + minasRestantes;
-    document.getElementById('contador-minas').textContent = textoContador;
-}
-
-// Abrir celda (click izquierdo)
-function AbrirCelda(fila, col) {
-    // Iniciar temporizador en la primera celda abierta
-    IniciarTemporizador();
-    
-    var celda = tablero[fila][col];
-    if (celda.abierta || celda.bandera) return;
-    celda.abierta = true;
-    var boton = document.querySelector('button[data-fila="' + fila + '"][data-col="' + col + '"]');
-    boton.className = 'celda abierta';
-    boton.disabled = true;
-    if (celda.mina) {
-        boton.className += ' mina';
-        boton.innerHTML = '💣';
-        MostrarTodasLasMinas();
-        PararTemporizador();
-        var sonidoExplocion = new Audio("sonidos/explocion.mp3")
-        sonidoExplocion.play()
-        setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
-       
-        return;
-    }
-    if (celda.numero > 0) {
-        boton.innerHTML = celda.numero;
-    } else {
-        boton.innerHTML = '';
-        // Abrir celdas vecinas si es 0
-        for (var dx = -1; dx <= 1; dx++) {
-            for (var dy = -1; dy <= 1; dy++) {
-                if (dx === 0 && dy === 0) continue;
-                var ni = fila + dx;
-                var nj = col + dy;
-                if (ni >= 0 && ni < FILAS && nj >= 0 && nj < COLUMNAS) {
-                    if (!tablero[ni][nj].abierta) AbrirCelda(ni, nj);
-                }
-            }
-        }
-    }
-    // Verificar si el jugador ganó
-    if (VerificarVictoria()) {
-        PararTemporizador();
-        var sonidoVictoria = new Audio("sonidos/victoria.mp3");
-        sonidoVictoria.play();
-        setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
-    }
-}
-
-// Mostrar todas las minas al perder
-function MostrarTodasLasMinas() {
-    for (var i = 0; i < FILAS; i++) {
-        for (var j = 0; j < COLUMNAS; j++) {
-            if (tablero[i][j].mina) {
-                var boton = document.querySelector('button[data-fila="' + i + '"][data-col="' + j + '"]');
-                boton.className = 'celda abierta mina';
-                boton.innerHTML = '💣';
-                boton.disabled = true;
-            }
-        }
-    }
-}
-
 // Poner o quitar bandera (click derecho)
 function ToggleBandera(fila, col, e) {
     e.preventDefault();
@@ -333,6 +336,7 @@ function NuevaPartida() {
 
 // Llamar a NuevaPartida() para iniciar el juego al cargar
 NuevaPartida();
+
 
 // --- Lógica para nombre de usuario y validación ---
 var inputNombre = document.getElementById('nombre-jugador');
@@ -449,6 +453,18 @@ function OcultarModal() {
     var modal = document.getElementById('modal-mensaje');
     modal.style.display = 'none';
 }
+document.addEventListener('DOMContentLoaded', function() {
+    var nombreGuardado = localStorage.getItem('nombreJugador');
+if (nombreGuardado) {
+    inputNombre.value = nombreGuardado;
+}
+    var btnCerrar = document.getElementById('modal-cerrar');
+    if (btnCerrar) {
+        btnCerrar.onclick = OcultarModal;
+    }
+    ActualizarHistorial();
+    ActualizarRanking();
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     var btnCerrar = document.getElementById('modal-cerrar');
@@ -467,6 +483,56 @@ function VerificarVictoria() {
         }
     }
     return true;
+}
+function GuardarPartida(nombre, tiempoSegundos, estado) {
+    var fecha = new Date();
+    var partida = {
+        nombre: nombre,
+        puntaje: CalcularPuntaje(tiempoSegundos, estado), // función sugerida abajo
+        fecha: fecha.toLocaleDateString(),
+        hora: fecha.toLocaleTimeString(),
+        duracion: tiempoSegundos,
+        estado: estado // "ganado" o "perdido"
+    };
+
+    var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
+    partidas.push(partida);
+    localStorage.setItem("partidas", JSON.stringify(partidas));
+}
+
+
+function ActualizarHistorial() {
+    const lista = document.getElementById("lista-historial");
+    if (!lista) return;
+    lista.innerHTML = "";
+
+    const historial = JSON.parse(localStorage.getItem("partidas")) || [];
+    historial.reverse().forEach(p => {
+        const item = document.createElement("li");
+        item.textContent = `${p.nombre} - ${p.tiempoFormateado} (${p.fecha} ${p.hora})`;
+        lista.appendChild(item);
+    });
+}
+
+function ActualizarRanking() {
+    const lista = document.getElementById("lista-ranking");
+    if (!lista) return;
+    lista.innerHTML = "";
+
+    const historial = JSON.parse(localStorage.getItem("partidas")) || [];
+    const ranking = historial
+        .sort((a, b) => a.tiempo - b.tiempo)
+        .slice(0, 5);
+
+    ranking.forEach((p, i) => {
+        const item = document.createElement("li");
+        item.textContent = `${i + 1}. ${p.nombre} - ${p.tiempoFormateado}`;
+        lista.appendChild(item);
+    });
+}
+function CalcularPuntaje(tiempo, estado) {
+    if (estado === "perdido") return 0;
+    return Math.max(1000 - tiempo, 100); // A menor tiempo, mayor puntaje
 }
 // Cambiar entre modo claro y oscuro
 document.getElementById('cambiar-tema').onclick = function () {
