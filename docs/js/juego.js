@@ -218,7 +218,10 @@ function AbrirCelda(fila, col) {
         boton.innerHTML = '💣';
         MostrarTodasLasMinas();
         PararTemporizador();
+        var sonidoExplocion = new Audio("sonidos/explocion.mp3")
+        sonidoExplocion.play()
         setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
+       
         return;
     }
     if (celda.numero > 0) {
@@ -240,6 +243,8 @@ function AbrirCelda(fila, col) {
     // Verificar si el jugador ganó
     if (VerificarVictoria()) {
         PararTemporizador();
+        var sonidoVictoria = new Audio("sonidos/victoria.mp3");
+        sonidoVictoria.play();
         setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
     }
 }
@@ -463,6 +468,19 @@ function VerificarVictoria() {
     }
     return true;
 }
+// Cambiar entre modo claro y oscuro
+document.getElementById('cambiar-tema').onclick = function () {
+    document.body.classList.toggle('tema-oscuro');
+    // Guardar en localStorage
+    localStorage.setItem('modo-tema', document.body.classList.contains('tema-oscuro') ? 'oscuro' : 'claro');
+};
+//Guardar el ultimo tema
+document.addEventListener('DOMContentLoaded', function () {
+    var temaGuardado = localStorage.getItem('modo-tema');
+    if (temaGuardado === 'oscuro') {
+        document.body.classList.add('tema-oscuro');
+    }
+});
 
 // Ejecutar pruebas de validación al cargar (solo para desarrollo)
 // Comentar esta línea en producción
