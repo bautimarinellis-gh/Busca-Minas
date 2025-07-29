@@ -134,6 +134,7 @@ function AbrirCelda(fila, col) {
         MostrarTodasLasMinas();
         PararTemporizador();
         setTimeout(function() { MostrarModal('¡Perdiste!'); }, 100);
+        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "perdido");
         return;
     }
     if (celda.numero > 0) {
@@ -155,7 +156,9 @@ function AbrirCelda(fila, col) {
     // Verificar si el jugador ganó
     if (VerificarVictoria()) {
         PararTemporizador();
+        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido);
         setTimeout(function() { MostrarModal('¡Ganaste!'); }, 100);
+        GuardarPartida(inputNombre.value.trim(), tiempoTranscurrido, "ganado");
     }
 }
 
@@ -272,6 +275,7 @@ if (btnComenzar) {
         // Validación: solo letras, espacios y acentos
         var nombreValido = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(nombre) && nombre.length >= 3;
         if (nombreValido) {
+            localStorage.setItem('nombreJugador', nombre);
             errorNombre.style.display = 'none';
             MostrarTableroYReiniciar();
             NuevaPartida();
@@ -305,10 +309,16 @@ function OcultarModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    var nombreGuardado = localStorage.getItem('nombreJugador');
+if (nombreGuardado) {
+    inputNombre.value = nombreGuardado;
+}
     var btnCerrar = document.getElementById('modal-cerrar');
     if (btnCerrar) {
         btnCerrar.onclick = OcultarModal;
     }
+    ActualizarHistorial();
+    ActualizarRanking();
 });
 
 function VerificarVictoria() {
@@ -321,4 +331,54 @@ function VerificarVictoria() {
         }
     }
     return true;
+}
+function GuardarPartida(nombre, tiempoSegundos, estado) {
+    var fecha = new Date();
+    var partida = {
+        nombre: nombre,
+        puntaje: CalcularPuntaje(tiempoSegundos, estado), // función sugerida abajo
+        fecha: fecha.toLocaleDateString(),
+        hora: fecha.toLocaleTimeString(),
+        duracion: tiempoSegundos,
+        estado: estado // "ganado" o "perdido"
+    };
+
+    var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
+    partidas.push(partida);
+    localStorage.setItem("partidas", JSON.stringify(partidas));
+}
+
+
+function ActualizarHistorial() {
+    const lista = document.getElementById("lista-historial");
+    if (!lista) return;
+    lista.innerHTML = "";
+
+    const historial = JSON.parse(localStorage.getItem("historialPartidas")) || [];
+    historial.reverse().forEach(p => {
+        const item = document.createElement("li");
+        item.textContent = `${p.nombre} - ${p.tiempoFormateado} (${p.fecha} ${p.hora})`;
+        lista.appendChild(item);
+    });
+}
+
+function ActualizarRanking() {
+    const lista = document.getElementById("lista-ranking");
+    if (!lista) return;
+    lista.innerHTML = "";
+
+    const historial = JSON.parse(localStorage.getItem("historialPartidas")) || [];
+    const ranking = historial
+        .sort((a, b) => a.tiempo - b.tiempo)
+        .slice(0, 5);
+
+    ranking.forEach((p, i) => {
+        const item = document.createElement("li");
+        item.textContent = `${i + 1}. ${p.nombre} - ${p.tiempoFormateado}`;
+        lista.appendChild(item);
+    });
+}
+function CalcularPuntaje(tiempo, estado) {
+    if (estado === "perdido") return 0;
+    return Math.max(1000 - tiempo, 100); // A menor tiempo, mayor puntaje
 }
