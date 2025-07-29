@@ -3,6 +3,81 @@
 var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
+var NIVEL_ACTUAL = 'facil';
+
+// Función para cambiar el nivel de dificultad
+function CambiarNivel(nivel) {
+    var configuraciones = {
+        'facil': { filas: 8, columnas: 8, minas: 10 },
+        'medio': { filas: 12, columnas: 12, minas: 25 },
+        'dificil': { filas: 16, columnas: 16, minas: 40 }
+    };
+    
+    if (configuraciones[nivel]) {
+        FILAS = configuraciones[nivel].filas;
+        COLUMNAS = configuraciones[nivel].columnas;
+        MINAS = configuraciones[nivel].minas;
+        NIVEL_ACTUAL = nivel;
+        
+        // Actualizar botones
+        var botones = document.querySelectorAll('.boton-nivel');
+        for (var i = 0; i < botones.length; i++) {
+            botones[i].classList.remove('activo');
+        }
+        document.getElementById('nivel-' + nivel).classList.add('activo');
+        
+        // Reiniciar juego si ya está iniciado
+        if (juegoIniciado) {
+            NuevaPartida();
+        }
+        
+        console.log('Nivel cambiado a:', nivel, '- Configuración:', FILAS + 'x' + COLUMNAS + ' - ' + MINAS + ' minas');
+    }
+}
+
+// Función para validar que el número de minas sea válido
+function ValidarConfiguracionMinas() {
+    var totalCeldas = FILAS * COLUMNAS;
+    if (MINAS >= totalCeldas) {
+        console.error('Error: El número de minas (' + MINAS + ') no puede ser mayor o igual al número total de celdas (' + totalCeldas + ')');
+        // Ajustar automáticamente a un valor válido (máximo 80% de las celdas)
+        MINAS = Math.floor(totalCeldas * 0.8);
+        console.log('Se ajustó automáticamente a ' + MINAS + ' minas');
+    }
+    if (MINAS <= 0) {
+        console.error('Error: El número de minas debe ser mayor que 0');
+        MINAS = 1;
+        console.log('Se ajustó automáticamente a 1 mina');
+    }
+}
+
+// Función para probar la validación (solo para desarrollo)
+function ProbarValidacionMinas() {
+    console.log('=== Pruebas de validación de minas ===');
+    
+    // Prueba 1: Configuración válida
+    console.log('Prueba 1: Configuración válida (10 minas en 8x8)');
+    MINAS = 10;
+    ValidarConfiguracionMinas();
+    console.log('MINAS después de validación:', MINAS);
+    
+    // Prueba 2: Demasiadas minas
+    console.log('Prueba 2: Demasiadas minas (100 minas en 8x8)');
+    MINAS = 100;
+    ValidarConfiguracionMinas();
+    console.log('MINAS después de validación:', MINAS);
+    
+    // Prueba 3: Cero minas
+    console.log('Prueba 3: Cero minas');
+    MINAS = 0;
+    ValidarConfiguracionMinas();
+    console.log('MINAS después de validación:', MINAS);
+    
+    // Restaurar configuración original
+    MINAS = 10;
+    console.log('Configuración restaurada a:', MINAS);
+    console.log('=== Fin de pruebas ===');
+}
 
 // Variables para el temporizador
 var temporizadorInterval;
@@ -32,13 +107,23 @@ function CrearTablero() {
 // Coloca minas aleatoriamente
 function ColocarMinas() {
     var minasColocadas = 0;
-    while (minasColocadas < MINAS) {
+    var intentosMaximos = FILAS * COLUMNAS * 2; // Evitar bucles infinitos
+    var intentos = 0;
+    
+    while (minasColocadas < MINAS && intentos < intentosMaximos) {
         var fila = Math.floor(Math.random() * FILAS);
         var col = Math.floor(Math.random() * COLUMNAS);
         if (!tablero[fila][col].mina) {
             tablero[fila][col].mina = true;
             minasColocadas++;
         }
+        intentos++;
+    }
+    
+    // Si no se pudieron colocar todas las minas, ajustar el número
+    if (minasColocadas < MINAS) {
+        console.warn('No se pudieron colocar todas las minas. Se colocaron ' + minasColocadas + ' de ' + MINAS);
+        MINAS = minasColocadas;
     }
 }
 
@@ -232,6 +317,7 @@ function RenderizarTablero() {
 
 // Inicializa una nueva partida
 function NuevaPartida() {
+    ValidarConfiguracionMinas();
     CrearTablero();
     ColocarMinas();
     CalcularNumeros();
@@ -255,6 +341,8 @@ function MostrarTableroYReiniciar() {
     btnReiniciar.style.display = '';
     document.getElementById('temporizador').style.display = '';
     document.getElementById('contador-minas').style.display = '';
+    document.getElementById('selector-nivel').style.display = 'none';
+    document.getElementById('cambiar-nivel').style.display = '';
 }
 
 function OcultarTableroYReiniciar() {
@@ -262,6 +350,8 @@ function OcultarTableroYReiniciar() {
     btnReiniciar.style.display = 'none';
     document.getElementById('temporizador').style.display = 'none';
     document.getElementById('contador-minas').style.display = 'none';
+    document.getElementById('selector-nivel').style.display = '';
+    document.getElementById('cambiar-nivel').style.display = 'none';
 }
 
 OcultarTableroYReiniciar();
@@ -290,6 +380,41 @@ if (btnReiniciar) {
         NuevaPartida();
     };
 }
+
+// Event listeners para los botones de nivel
+document.addEventListener('DOMContentLoaded', function() {
+    var btnFacil = document.getElementById('nivel-facil');
+    var btnMedio = document.getElementById('nivel-medio');
+    var btnDificil = document.getElementById('nivel-dificil');
+    var btnCambiarNivel = document.getElementById('cambiar-nivel');
+    
+    if (btnFacil) {
+        btnFacil.onclick = function() {
+            CambiarNivel('facil');
+        };
+    }
+    
+    if (btnMedio) {
+        btnMedio.onclick = function() {
+            CambiarNivel('medio');
+        };
+    }
+    
+    if (btnDificil) {
+        btnDificil.onclick = function() {
+            CambiarNivel('dificil');
+        };
+    }
+    
+    if (btnCambiarNivel) {
+        btnCambiarNivel.onclick = function() {
+            OcultarTableroYReiniciar();
+            document.getElementById('nombre-container').style.display = '';
+            PararTemporizador();
+            juegoIniciado = false;
+        };
+    }
+});
 
 // Funciones para mostrar y ocultar el modal de mensaje
 function MostrarModal(mensaje) {
@@ -322,3 +447,7 @@ function VerificarVictoria() {
     }
     return true;
 }
+
+// Ejecutar pruebas de validación al cargar (solo para desarrollo)
+// Comentar esta línea en producción
+// ProbarValidacionMinas();
