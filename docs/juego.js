@@ -102,6 +102,21 @@ function ReiniciarTemporizador() {
     ActualizarTemporizador();
 }
 
+// Función para calcular y actualizar el contador de minas restantes
+function ActualizarContadorMinas() {
+    var banderasPlantadas = 0;
+    for (var i = 0; i < FILAS; i++) {
+        for (var j = 0; j < COLUMNAS; j++) {
+            if (tablero[i][j].bandera) {
+                banderasPlantadas++;
+            }
+        }
+    }
+    var minasRestantes = MINAS - banderasPlantadas;
+    var textoContador = 'Minas restantes: ' + minasRestantes;
+    document.getElementById('contador-minas').textContent = textoContador;
+}
+
 // Abrir celda (click izquierdo)
 function AbrirCelda(fila, col) {
     // Iniciar temporizador en la primera celda abierta
@@ -172,6 +187,7 @@ function ToggleBandera(fila, col, e) {
         boton.className = 'celda';
         boton.innerHTML = '';
     }
+    ActualizarContadorMinas();
 }
 
 // Agregar listeners a los botones
@@ -221,6 +237,7 @@ function NuevaPartida() {
     CalcularNumeros();
     RenderizarTablero();
     ReiniciarTemporizador();
+    ActualizarContadorMinas();
 }
 
 // Llamar a NuevaPartida() para iniciar el juego al cargar
@@ -237,25 +254,30 @@ function MostrarTableroYReiniciar() {
     contenedorTablero.style.display = '';
     btnReiniciar.style.display = '';
     document.getElementById('temporizador').style.display = '';
+    document.getElementById('contador-minas').style.display = '';
 }
 
 function OcultarTableroYReiniciar() {
     contenedorTablero.style.display = 'none';
     btnReiniciar.style.display = 'none';
     document.getElementById('temporizador').style.display = 'none';
+    document.getElementById('contador-minas').style.display = 'none';
 }
 
 OcultarTableroYReiniciar();
 
 if (btnComenzar) {
     btnComenzar.onclick = function() {
-        var nombre = inputNombre.value.replace(/\s+/g, '');
-        if (nombre.length >= 3) {
+        var nombre = inputNombre.value.trim();
+        // Validación: solo letras, espacios y acentos
+        var nombreValido = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/.test(nombre) && nombre.length >= 3;
+        if (nombreValido) {
             errorNombre.style.display = 'none';
             MostrarTableroYReiniciar();
             NuevaPartida();
             document.getElementById('nombre-container').style.display = 'none';
         } else {
+            errorNombre.textContent = 'El nombre debe tener al menos 3 letras (solo letras permitidas).';
             errorNombre.style.display = 'block';
             OcultarTableroYReiniciar();
         }
