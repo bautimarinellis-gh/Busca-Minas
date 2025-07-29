@@ -18,6 +18,14 @@
     </header>
     <main>
         <h1 class="titulo-buscaminas">Busca-Minas</h1>
+        <div id="selector-nivel" class="selector-nivel">
+            <h3>Selecciona el nivel de dificultad:</h3>
+            <div class="botones-nivel">
+                <button id="nivel-facil" class="boton-nivel activo" data-filas="8" data-columnas="8" data-minas="10">Fácil (8×8 - 10 minas)</button>
+                <button id="nivel-medio" class="boton-nivel" data-filas="12" data-columnas="12" data-minas="25">Medio (12×12 - 25 minas)</button>
+                <button id="nivel-dificil" class="boton-nivel" data-filas="16" data-columnas="16" data-minas="40">Difícil (16×16 - 40 minas)</button>
+            </div>
+        </div>
         <div id="temporizador" class="temporizador">Tiempo: 00:00</div>
         <div id="contador-minas" class="contador-minas">Minas restantes: 10</div>
         <div id="nombre-container">
@@ -26,7 +34,10 @@
             <div id="error-nombre">El nombre debe tener al menos 3 letras.</div>
         </div>
         <div id="tablero"></div>
-        <button id="reiniciar">Reiniciar</button>
+        <div class="botones-juego">
+            <button id="reiniciar">Reiniciar</button>
+            <button id="cambiar-nivel">Cambiar Nivel</button>
+        </div>
     </main>
     <!-- Modal para mensajes -->
     <div id="modal-mensaje">
