@@ -140,3 +140,69 @@ form button:hover {
 #reiniciar {
     display: none;
 }
+/* Modo oscuro */
+body.tema-oscuro {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.tema-oscuro main {
+    background: #1e1e1e;
+    box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+}
+
+body.tema-oscuro nav ul li a {
+    color: #f1f1f1;
+}
+
+body.tema-oscuro nav ul li a:hover {
+    background: #f1f1f1;
+    color: #121212;
+}
+
+body.tema-oscuro .buscaminas-tabla {
+    background: #333;
+}
+
+body.tema-oscuro .celda {
+    background: #444;
+    border: 2px solid #777;
+    color: #eee;
+}
+
+body.tema-oscuro .celda.abierta {
+    background: #1e1e1e;
+    border: 2px solid #666;
+    color: #fff;
+}
+
+body.tema-oscuro .modal-contenido {
+    background: #2e2e2e;
+    color: #f1f1f1;
+}
+
+body.tema-oscuro #contador-minas {
+    background: #4e342e;
+    border-color: #ffcc02;
+    color: #ffccbc;
+}
+
+body.tema-oscuro #temporizador {
+    background: #263238;
+    color: #80deea;
+}
+
+body.tema-oscuro .boton-nivel {
+    background: #444;
+    color: #ccc;
+}
+
+body.tema-oscuro .boton-nivel:hover {
+    background: #666;
+    color: #fff;
+}
+
+body.tema-oscuro .boton-nivel.activo {
+    background: #26a69a;
+    color: #fff;
+}
