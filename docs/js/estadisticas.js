@@ -6,20 +6,19 @@ document.addEventListener("DOMContentLoaded", function () {
     tablaHistorial.innerHTML = "";
     partidas.forEach(function (p) {
         var fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${p.nombre}</td>
-            <td>${p.puntaje}</td>
-            <td>${p.fecha}</td>
-            <td>${p.hora}</td>
-            <td>${p.duracion}</td>
-            <td class="estado-${p.estado}">${p.estado}</td>
-        `;
+        fila.innerHTML = 
+            '<td>' + p.nombre + '</td>' +
+            '<td>' + p.puntaje + '</td>' +
+            '<td>' + p.fecha + '</td>' +
+            '<td>' + p.hora + '</td>' +
+            '<td>' + p.duracion + '</td>' +
+            '<td class="estado-' + p.estado + '">' + p.estado + '</td>';
         tablaHistorial.appendChild(fila);
     });
 
     // RANKING TOP 10: ganadas, mayor puntaje, menor tiempo
     var ranking = partidas
-        .filter(p => p.estado === "ganado")
+        .filter(function(p) { return p.estado === "ganado"; })
         .sort(function (a, b) {
             if (b.puntaje !== a.puntaje) {
                 return b.puntaje - a.puntaje;
@@ -32,12 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
     tablaRanking.innerHTML = "";
     ranking.forEach(function (p) {
         var fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${p.nombre}</td>
-            <td>${p.puntaje}</td>
-            <td>${p.duracion}</td>
-            <td>${p.fecha}</td>
-        `;
+        fila.innerHTML = 
+            '<td>' + p.nombre + '</td>' +
+            '<td>' + p.puntaje + '</td>' +
+            '<td>' + p.duracion + '</td>' +
+            '<td>' + p.fecha + '</td>';
         tablaRanking.appendChild(fila);
     });
 
@@ -61,11 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
         tablaRanking.innerHTML = "";
         ranking.forEach(function (p) {
             var fila = document.createElement("tr");
-            fila.innerHTML = `
-                <td>${p.nombre}</td>
-                <td>${p.puntaje}</td>
-                <td>${p.duracion}</td>
-            `;
+            fila.innerHTML = 
+                '<td>' + p.nombre + '</td>' +
+                '<td>' + p.puntaje + '</td>' +
+                '<td>' + p.duracion + '</td>';
             tablaRanking.appendChild(fila);
         });
     });

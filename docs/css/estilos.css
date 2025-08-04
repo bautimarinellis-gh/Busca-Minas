@@ -19,10 +19,17 @@ header {
     margin: 0;
 }
 nav {
+    background-color: #009688;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 30px;
+    height: 60px;
+    position: relative;
     width: 100%;
     margin: 0;
-    padding: 0;
 }
+
 nav ul {
     list-style: none;
     display: flex;
@@ -35,9 +42,11 @@ nav ul {
     gap: 40px;
     box-sizing: border-box;
 }
+
 nav ul li {
     margin: 0;
 }
+
 nav ul li a {
     color: #fff;
     text-decoration: none;
@@ -47,59 +56,33 @@ nav ul li a {
     border-radius: 4px;
     transition: background 0.2s, color 0.2s;
 }
+
 nav ul li a:hover {
     background: #fff;
     color: #222;
 }
-/* Nuevo */
-nav {
-    background-color: #009688;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 30px;
-    height: 60px;
-    position: relative;
-}
 
-.nav-centro {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-    margin: 0 auto;
-    padding: 0;
-}
-
-.nav-centro li a {
-    color: white;
-    font-weight: bold;
+/* Estilos para el botón de tema en la navegación */
+nav ul li button {
+    color: #fff;
     text-decoration: none;
+    font-weight: 500;
     font-size: 1.1em;
-    padding: 10px 16px;
-    border-radius: 6px;
-    transition: background 0.3s ease, color 0.3s ease;
+    padding: 8px 18px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
 }
 
-.nav-centro li a:hover {
-    background-color: white;
-    color: #009688;
+nav ul li button:hover {
+    background: #fff;
+    color: #222;
 }
 
-.boton-estadisticas-nav {
-    position: absolute;
-    right: 30px;
-    background-color: white;
-    color: #009688;
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-.boton-estadisticas-nav:hover {
-    background-color: #00796b;
-    color: white;
-}
+
 /* Estilos para el formulario de contacto */
 main {
     max-width: 500px;
@@ -240,19 +223,7 @@ form button:hover {
 .boton-estadisticas:hover {
     background: #00796b;
 }
-.boton-estadisticas-nav {
-    background-color: white;
-    color: #009688;
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-.boton-estadisticas-nav:hover {
-    background-color: #00796b;
-    color: white;
-}
+
 /* Modo oscuro */
 body.tema-oscuro {
     background-color: #121212;
@@ -269,6 +240,15 @@ body.tema-oscuro nav ul li a {
 }
 
 body.tema-oscuro nav ul li a:hover {
+    background: #f1f1f1;
+    color: #121212;
+}
+
+body.tema-oscuro nav ul li button {
+    color: #f1f1f1;
+}
+
+body.tema-oscuro nav ul li button:hover {
     background: #f1f1f1;
     color: #121212;
 }
@@ -318,4 +298,125 @@ body.tema-oscuro .boton-nivel:hover {
 body.tema-oscuro .boton-nivel.activo {
     background: #26a69a;
     color: #fff;
+}
+
+/* Media Queries para Responsive Mobile */
+@media (max-width: 768px) {
+    /* Navegación responsive */
+    nav {
+        height: auto;
+        padding: 10px 20px;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 0;
+        min-height: auto;
+        width: 100%;
+    }
+    
+    nav ul li {
+        margin: 2px 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    nav ul li a,
+    nav ul li button {
+        font-size: 1em;
+        padding: 12px 20px;
+        min-width: 150px;
+        display: inline-block;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    /* Main container */
+    main {
+        max-width: 95%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    /* Formularios */
+    form input, 
+    form textarea {
+        font-size: 16px; /* Evita zoom en iOS */
+        padding: 12px;
+    }
+    
+    /* Evitar zoom en inputs en iOS */
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        font-size: 16px !important;
+    }
+    
+    /* Botones */
+    #comenzar-juego,
+    form button {
+        padding: 12px 24px;
+        font-size: 1em;
+        min-height: 44px; /* Tamaño mínimo para touch */
+    }
+    
+    /* Contenedor de nombre */
+    #nombre-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    #nombre-jugador {
+        width: 100%;
+        max-width: 300px;
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    #comenzar-juego {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    /* Título */
+    .titulo-buscaminas {
+        font-size: 2em;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Navegación para pantallas muy pequeñas */
+    nav {
+        padding: 8px 15px;
+    }
+    
+    nav ul {
+        gap: 6px;
+        padding: 8px 0;
+    }
+    
+    nav ul li a,
+    nav ul li button {
+        font-size: 0.9em;
+        padding: 10px 16px;
+        min-width: 120px;
+        max-width: 180px;
+    }
+    
+    /* Main container */
+    main {
+        max-width: 98%;
+        margin: 15px auto;
+        padding: 15px;
+    }
+    
+    /* Título */
+    .titulo-buscaminas {
+        font-size: 1.8em;
+        margin-top: 15px;
+    }
 }
