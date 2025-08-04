@@ -1,3 +1,5 @@
+"use strict";
+
 document.addEventListener("DOMContentLoaded", function () {
     var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
 
@@ -12,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
             '<td>' + p.fecha + '</td>' +
             '<td>' + p.hora + '</td>' +
             '<td>' + p.duracion + '</td>' +
-            '<td class="estado-' + p.estado + '">' + p.estado + '</td>';
+            '<td class="estado-' + p.estado + '">' + p.estado + '</td>'
             '<td>' + p.dificultad + '</td>'
         ;
         tablaHistorial.appendChild(fila);

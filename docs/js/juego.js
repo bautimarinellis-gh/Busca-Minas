@@ -1,3 +1,4 @@
+"use strict";
 var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
@@ -482,7 +483,7 @@ function VerificarVictoria() {
     }
     return true;
 }
-function GuardarPartida(nombre, tiempoSegundos, estado) {
+function GuardarPartida(nombre, tiempoSegundos, estado, dificultad) {
     var fecha = new Date();
     var partida = {
         nombre: nombre,
@@ -492,7 +493,6 @@ function GuardarPartida(nombre, tiempoSegundos, estado) {
         duracion: tiempoSegundos,
         estado: estado, // "ganado" o "perdido"
         dificultad: dificultad 
-
     };
 
     var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
@@ -544,6 +544,17 @@ function CalcularPuntaje(tiempo, estado, dificultad) {
 
     return basePuntaje * multiplicador;
 }
+document.addEventListener('DOMContentLoaded', function () {
+    var btnResetearTodo = document.getElementById('resetear');
+    if (btnResetearTodo) {
+        btnResetearTodo.onclick = function () {
+            if (confirm("¿Estás seguro de que querés resetear todo? Se perderán todas las partidas guardadas.")) {
+                localStorage.clear();
+                location.reload();
+            }
+        };
+    }
+});
 
 
 // Ejecutar pruebas de validación al cargar (solo para desarrollo)

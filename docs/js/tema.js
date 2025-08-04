@@ -1,4 +1,5 @@
 // Funcionalidad para manejar el tema oscuro/claro
+"use strict";
 
 // Cargar tema guardado al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
