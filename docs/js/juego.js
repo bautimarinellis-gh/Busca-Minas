@@ -1,5 +1,3 @@
-// --- Busca-Minas básico ES5 ---
-
 var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
@@ -484,16 +482,17 @@ function VerificarVictoria() {
     }
     return true;
 }
-function GuardarPartida(nombre, tiempoSegundos, estado, dificultad) {
+function GuardarPartida(nombre, tiempoSegundos, estado) {
     var fecha = new Date();
     var partida = {
         nombre: nombre,
-        puntaje: CalcularPuntaje(tiempoSegundos, estado, dificultad), // función sugerida abajo
+        puntaje: CalcularPuntaje(tiempoSegundos, estado), // función sugerida abajo
         fecha: fecha.toLocaleDateString(),
         hora: fecha.toLocaleTimeString(),
         duracion: tiempoSegundos,
         estado: estado, // "ganado" o "perdido"
         dificultad: dificultad 
+
     };
 
     var partidas = JSON.parse(localStorage.getItem("partidas")) || [];
@@ -503,31 +502,31 @@ function GuardarPartida(nombre, tiempoSegundos, estado, dificultad) {
 
 
 function ActualizarHistorial() {
-    const lista = document.getElementById("lista-historial");
+    var lista = document.getElementById("lista-historial");
     if (!lista) return;
     lista.innerHTML = "";
 
-    const historial = JSON.parse(localStorage.getItem("partidas")) || [];
-    historial.reverse().forEach(p => {
-        const item = document.createElement("li");
-        item.textContent = `${p.nombre} - ${p.tiempoFormateado} (${p.fecha} ${p.hora})`;
+    var historial = JSON.parse(localStorage.getItem("partidas")) || [];
+    historial.reverse().forEach(function(p) {
+        var item = document.createElement("li");
+        item.textContent = p.nombre + " - " + p.tiempoFormateado + " (" + p.fecha + " " + p.hora + ")";
         lista.appendChild(item);
     });
 }
 
 function ActualizarRanking() {
-    const lista = document.getElementById("lista-ranking");
+    var lista = document.getElementById("lista-ranking");
     if (!lista) return;
     lista.innerHTML = "";
 
-    const historial = JSON.parse(localStorage.getItem("partidas")) || [];
-    const ranking = historial
-        .sort((a, b) => a.tiempo - b.tiempo)
+    var historial = JSON.parse(localStorage.getItem("partidas")) || [];
+    var ranking = historial
+        .sort(function(a, b) { return a.tiempo - b.tiempo; })
         .slice(0, 5);
 
-    ranking.forEach((p, i) => {
-        const item = document.createElement("li");
-        item.textContent = `${i + 1}. ${p.nombre} - ${p.tiempoFormateado}`;
+    ranking.forEach(function(p, i) {
+        var item = document.createElement("li");
+        item.textContent = (i + 1) + ". " + p.nombre + " - " + p.tiempoFormateado;
         lista.appendChild(item);
     });
 }
@@ -546,19 +545,6 @@ function CalcularPuntaje(tiempo, estado, dificultad) {
     return basePuntaje * multiplicador;
 }
 
-// Cambiar entre modo claro y oscuro
-document.getElementById('cambiar-tema').onclick = function () {
-    document.body.classList.toggle('tema-oscuro');
-    // Guardar en localStorage
-    localStorage.setItem('modo-tema', document.body.classList.contains('tema-oscuro') ? 'oscuro' : 'claro');
-};
-//Guardar el ultimo tema
-document.addEventListener('DOMContentLoaded', function () {
-    var temaGuardado = localStorage.getItem('modo-tema');
-    if (temaGuardado === 'oscuro') {
-        document.body.classList.add('tema-oscuro');
-    }
-});
 
 // Ejecutar pruebas de validación al cargar (solo para desarrollo)
 // Comentar esta línea en producción

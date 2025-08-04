@@ -6,15 +6,15 @@ document.addEventListener("DOMContentLoaded", function () {
     tablaHistorial.innerHTML = "";
     partidas.forEach(function (p) {
         var fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${p.nombre}</td>
-            <td>${p.puntaje}</td>
-            <td>${p.fecha}</td>
-            <td>${p.hora}</td>
-            <td>${p.duracion}</td>
-            <td class="estado-${p.estado}">${p.estado}</td>
-            <td>${p.dificultad}</td>
-        `;
+        fila.innerHTML = 
+            '<td>' + p.nombre + '</td>' +
+            '<td>' + p.puntaje + '</td>' +
+            '<td>' + p.fecha + '</td>' +
+            '<td>' + p.hora + '</td>' +
+            '<td>' + p.duracion + '</td>' +
+            '<td class="estado-' + p.estado + '">' + p.estado + '</td>';
+            '<td>' + p.dificultad + '</td>'
+        ;
         tablaHistorial.appendChild(fila);
     });
 
@@ -33,20 +33,18 @@ document.addEventListener("DOMContentLoaded", function () {
     tablaRanking.innerHTML = "";
     ranking.forEach(function (p) {
         var fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td>${p.nombre}</td>
-            <td>${p.puntaje}</td>
-            <td>${p.duracion}</td>
-            <td>${p.dificultad}</td>
-            <td>${p.fecha}</td>
-           
-
-        `;
+        fila.innerHTML = 
+           '<td>' + p.nombre + '</td>' +
+            '<td>' + p.puntaje + '</td>' +
+            '<td>' + p.duracion + '</td>' +
+            '<td>' + p.dificultad + '</td>'+
+            '<td>' + p.fecha + '</td>'
+        ;  
         tablaRanking.appendChild(fila);
     });
 
     // Orden dinámico por fecha o puntaje (opcional)
-    var ordenActual = "puntaje";
+ var ordenActual = "puntaje";
     var encabezadoPuntaje = document.querySelector("#tabla-ranking thead th:nth-child(2)");
     var encabezadoFecha = document.createElement("th");
     encabezadoFecha.textContent = "Fecha";
@@ -65,11 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
         tablaRanking.innerHTML = "";
         ranking.forEach(function (p) {
             var fila = document.createElement("tr");
-            fila.innerHTML = `
-                <td>${p.nombre}</td>
-                <td>${p.puntaje}</td>
-                <td>${p.duracion}</td>
-            `;
+            fila.innerHTML = 
+                '<td>' + p.nombre + '</td>' +
+                '<td>' + p.puntaje + '</td>' +
+                '<td>' + p.duracion + '</td>';
             tablaRanking.appendChild(fila);
         });
     });

@@ -266,4 +266,97 @@ main {
     transform: translateX(-50%);
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     border: 2px solid #ffcc02;
+}
+
+/* Media Queries para Responsive Mobile */
+@media (max-width: 768px) {
+    /* Contenedor principal */
+    main {
+        padding: 0 10px;
+    }
+    
+    /* Título */
+    .titulo-buscaminas {
+        font-size: 1.8em;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+    
+    /* Selector de nivel */
+    .selector-nivel {
+        margin: 15px 0 20px 0;
+    }
+    
+    .selector-nivel h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+    
+    .botones-nivel {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .boton-nivel {
+        min-width: 200px;
+        padding: 15px 20px;
+        font-size: 0.95em;
+    }
+    
+    /* Tablero */
+    .celda {
+        width: 32px;
+        height: 32px;
+        font-size: 1em;
+    }
+    
+    /* Para pantallas muy pequeñas */
+    @media (max-width: 480px) {
+        .celda {
+            width: 28px;
+            height: 28px;
+            font-size: 0.9em;
+        }
+    }
+    
+    /* Temporizador y contador */
+    .temporizador,
+    .contador-minas {
+        font-size: 1em;
+        padding: 10px 12px;
+        margin: 8px 0 15px 0;
+    }
+    
+    /* Botones del juego */
+    .botones-juego {
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0 0 0;
+    }
+    
+    #reiniciar, 
+    #cambiar-nivel {
+        width: 200px;
+        height: 50px;
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+    
+    /* Modal */
+    #modal-mensaje .modal-contenido {
+        padding: 24px 20px;
+        min-width: 280px;
+        margin: 20px;
+    }
+    
+    #modal-texto {
+        font-size: 1.1em;
+    }
+    
+    #modal-cerrar {
+        padding: 10px 20px;
+        font-size: 1em;
+        min-height: 44px;
+    }
 } 
