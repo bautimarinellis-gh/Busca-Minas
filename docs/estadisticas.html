@@ -4,77 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Estadísticas - Busca-Minas</title>
-  <link rel="stylesheet" href="css/estilos.css">
-  <style>
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    .bloque-estadisticas {
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-    }
-    @media(min-width: 768px) {
-        .bloque-estadisticas {
-            flex-direction: row;
-            justify-content: space-between;
-        }
-    }
-        .tabla-container {
-    flex: 1;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    min-width: 0;
-    max-width: 100%;
-    overflow-x: auto; 
-    }
-
-    table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 1.1em;
-    min-width: 700px; 
-    }
-
-        th, td {
-    padding: 14px;
-    text-align: center;
-    white-space: nowrap; 
-    }
-
-    h2 {
-        text-align: center;
-        font-size: 1.4em;
-        margin-bottom: 20px;
-    }
-    th {
-      background-color: #f5f5f5;
-      font-weight: bold;
-    }
-    td.estado-ganado {
-      color: green;
-    }
-    td.estado-perdido {
-      color: red;
-    }
-    .volver {
-      display: block;
-      margin: 30px auto 0;
-      padding: 10px 20px;
-      background: #009688;
-      color: #fff;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-  </style>
+    <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estadisticas.css">
 </head>
 <body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="https://github.com/bautimarinellis-gh/Busca-Minas" target="_blank" rel="noopener noreferrer">Github</a></li>
+        <li><button id="cambiar-tema">Tema</button></li>
+      </ul>
+    </nav>
+  </header>
   <main>
     <h1 class="titulo-buscaminas">Estadísticas</h1>
     <div class="bloque-estadisticas">
@@ -89,7 +31,6 @@
               <th>Hora</th>
               <th>Duración (s)</th>
               <th>Estado</th>
-              <th>Dificultad</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -103,8 +44,6 @@
               <th>Nombre</th>
               <th>Puntaje</th>
               <th>Duración (s)</th>
-              
-              <th>Dificultad</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -114,5 +53,6 @@
     <a href="index.html" class="volver">Volver al juego</a>
   </main>
   <script src="js/estadisticas.js"></script>
+  <script src="js/tema.js"></script>
 </body>
 </html>
