@@ -1,3 +1,18 @@
+/**
+ * BUSCAMINAS - ESTILOS DE ESTADÍSTICAS
+ * ====================================
+ * 
+ * Estilos para la página de estadísticas y ranking:
+ * - Layout de tablas
+ * - Diseño responsive
+ * - Indicadores visuales de estado
+ * - Efectos hover y transiciones
+ */
+
+/* ====================================
+   LAYOUT PRINCIPAL
+   ==================================== */
+
 main {
     max-width: 900px;
     margin: 40px auto;

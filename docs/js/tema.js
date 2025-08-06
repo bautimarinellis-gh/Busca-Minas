@@ -1,4 +1,12 @@
-// Funcionalidad para manejar el tema oscuro/claro
+/**
+ * BUSCAMINAS - GESTIÓN DE TEMAS (MODO OSCURO/CLARO)
+ * ================================================
+ * 
+ * Maneja el cambio entre modo claro y oscuro con persistencia
+ * en localStorage para recordar la preferencia del usuario.
+ * 
+ */
+
 "use strict";
 
 // Cargar tema guardado al cargar la página
