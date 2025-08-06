@@ -1,3 +1,20 @@
+/**
+ * BUSCAMINAS - VALIDACIONES DE FORMULARIO DE CONTACTO
+ * ==================================================
+ * 
+ * Maneja la validación del formulario de contacto:
+ * - Validación de campos (nombre, email, mensaje)
+ * - Mensajes de error dinámicos
+ * - Procesamiento de envío por email
+ * 
+ */
+
+"use strict";
+
+/**
+ * Event listener para el envío del formulario de contacto
+ * Valida todos los campos y procesa el envío si es válido
+ */
 document.getElementById('contacto-form').addEventListener('submit', function(e) {
     e.preventDefault();
     var nombre = document.getElementById('nombre').value.trim();

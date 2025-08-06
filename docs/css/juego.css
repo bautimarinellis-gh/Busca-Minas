@@ -1,6 +1,19 @@
-/* Estilos para Busca-Minas */
+/**
+ * BUSCAMINAS - ESTILOS DEL JUEGO
+ * ==============================
+ * 
+ * Estilos específicos para el juego Buscaminas:
+ * - Tablero y celdas
+ * - Estados de las celdas (abierta, mina, bandera)
+ * - Animaciones y efectos
+ * - Controles del juego
+ * - Responsive design
+ */
 
-/* Contenedor principal del juego */
+/* ====================================
+   LAYOUT PRINCIPAL DEL JUEGO
+   ==================================== */
+
 main {
     width: 100%;
     max-width: 100%;
@@ -8,6 +21,10 @@ main {
     overflow-x: hidden;
     padding: 0 20px;
 }
+
+/* ====================================
+   TABLERO DEL JUEGO
+   ==================================== */
 
 #tablero {
     display: flex;

@@ -1,17 +1,47 @@
+/**
+ * BUSCAMINAS - LÓGICA PRINCIPAL DEL JUEGO
+ * =====================================
+ * 
+ * Implementación del clásico juego Buscaminas con diferentes niveles de dificultad.
+ * Incluye sistema de temporizador, guardado de estadísticas y cambio de temas.
+ *
+ */
+
 "use strict";
+
+// ====================================
+// CONFIGURACIÓN Y VARIABLES GLOBALES
+// ====================================
+
+/**
+ * Configuración del tablero actual
+ */
 var FILAS = 8;
 var COLUMNAS = 8;
 var MINAS = 10;
 var NIVEL_ACTUAL = 'facil';
-// Variables para el temporizador
+
+/**
+ * Variables del sistema de temporizador
+ */
 var temporizadorInterval;
 var tiempoTranscurrido = 0;
 var juegoIniciado = false;
 
-// Tablero lógico: cada celda será un objeto {mina: bool, abierta: bool, bandera: bool, numero: int}
+/**
+ * Tablero lógico del juego
+ * Cada celda es un objeto: {mina: boolean, abierta: boolean, bandera: boolean, numero: integer}
+ */
 var tablero = [];
 
-// Inicializa el tablero vacío
+// ====================================
+// FUNCIONES DE INICIALIZACIÓN DEL TABLERO
+// ====================================
+
+/**
+ * Inicializa el tablero vacío con las dimensiones actuales
+ * Crea una matriz de objetos celda con propiedades por defecto
+ */
 function CrearTablero() {
     tablero = [];
     for (var i = 0; i < FILAS; i++) {
@@ -29,7 +59,10 @@ function CrearTablero() {
 }
 
 
-// Coloca minas aleatoriamente
+/**
+ * Coloca las minas de forma aleatoria en el tablero
+ * Incluye protección contra bucles infinitos
+ */
 function ColocarMinas() {
     var minasColocadas = 0;
     var intentosMaximos = FILAS * COLUMNAS * 2; // Evitar bucles infinitos
@@ -52,7 +85,10 @@ function ColocarMinas() {
     }
 }
 
-// Calcula los números de minas vecinas para cada celda
+/**
+ * Calcula el número de minas vecinas para cada celda del tablero
+ * Recorre todas las celdas y cuenta las minas adyacentes (8 direcciones)
+ */
 function CalcularNumeros() {
     for (var i = 0; i < FILAS; i++) {
         for (var j = 0; j < COLUMNAS; j++) {
@@ -77,7 +113,14 @@ function CalcularNumeros() {
 }
 
 
-// Funciones para el temporizador
+// ====================================
+// SISTEMA DE TEMPORIZADOR
+// ====================================
+
+/**
+ * Inicia el temporizador del juego
+ * Solo se ejecuta una vez por partida, en el primer movimiento
+ */
 function IniciarTemporizador() {
     if (!juegoIniciado) {
         juegoIniciado = true;
@@ -128,7 +171,16 @@ function ActualizarContadorMinas() {
     document.getElementById('contador-minas').textContent = textoContador;
 }
 
-// Abrir celda (click izquierdo)
+// ====================================
+// LÓGICA PRINCIPAL DEL JUEGO
+// ====================================
+
+/**
+ * Abre una celda del tablero (acción de click izquierdo)
+ * Maneja minas, números, expansión automática y verificación de victoria
+ * @param {number} fila - Fila de la celda a abrir
+ * @param {number} col - Columna de la celda a abrir
+ */
 function AbrirCelda(fila, col) {
     // Iniciar temporizador en la primera celda abierta
     IniciarTemporizador();
@@ -217,7 +269,7 @@ function CambiarNivel(nivel) {
             NuevaPartida();
         }
         
-        console.log('Nivel cambiado a:', nivel, '- Configuración:', FILAS + 'x' + COLUMNAS + ' - ' + MINAS + ' minas');
+
     }
 }
 
@@ -228,42 +280,16 @@ function ValidarConfiguracionMinas() {
         console.error('Error: El número de minas (' + MINAS + ') no puede ser mayor o igual al número total de celdas (' + totalCeldas + ')');
         // Ajustar automáticamente a un valor válido (máximo 80% de las celdas)
         MINAS = Math.floor(totalCeldas * 0.8);
-        console.log('Se ajustó automáticamente a ' + MINAS + ' minas');
+
     }
     if (MINAS <= 0) {
         console.error('Error: El número de minas debe ser mayor que 0');
         MINAS = 1;
-        console.log('Se ajustó automáticamente a 1 mina');
+
     }
 }
 
-// Función para probar la validación (solo para desarrollo)
-function ProbarValidacionMinas() {
-    console.log('=== Pruebas de validación de minas ===');
-    
-    // Prueba 1: Configuración válida
-    console.log('Prueba 1: Configuración válida (10 minas en 8x8)');
-    MINAS = 10;
-    ValidarConfiguracionMinas();
-    console.log('MINAS después de validación:', MINAS);
-    
-    // Prueba 2: Demasiadas minas
-    console.log('Prueba 2: Demasiadas minas (100 minas en 8x8)');
-    MINAS = 100;
-    ValidarConfiguracionMinas();
-    console.log('MINAS después de validación:', MINAS);
-    
-    // Prueba 3: Cero minas
-    console.log('Prueba 3: Cero minas');
-    MINAS = 0;
-    ValidarConfiguracionMinas();
-    console.log('MINAS después de validación:', MINAS);
-    
-    // Restaurar configuración original
-    MINAS = 10;
-    console.log('Configuración restaurada a:', MINAS);
-    console.log('=== Fin de pruebas ===');
-}
+
 
 // Poner o quitar bandera (click derecho)
 function ToggleBandera(fila, col, e) {
@@ -557,6 +583,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// Ejecutar pruebas de validación al cargar (solo para desarrollo)
-// Comentar esta línea en producción
-// ProbarValidacionMinas();
+

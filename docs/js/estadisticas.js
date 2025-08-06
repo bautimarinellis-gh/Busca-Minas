@@ -1,3 +1,13 @@
+/**
+ * BUSCAMINAS - ESTADÍSTICAS Y RANKING
+ * ===================================
+ * 
+ * Maneja la visualización de estadísticas del juego:
+ * - Historial completo de partidas
+ * - Ranking de mejores jugadores (solo partidas ganadas)
+ * 
+ */
+
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {

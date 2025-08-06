@@ -1,4 +1,20 @@
+/**
+ * BUSCAMINAS - ESTILOS PRINCIPALES
+ * ================================
+ * 
+ * Hoja de estilos principal que contiene:
+ * - Estilos base y tipografía
+ * - Navegación y header
+ * - Layout responsive
+ * - Tema oscuro/claro
+ * - Componentes generales
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
+
+/* ====================================
+   ESTILOS BASE Y TIPOGRAFÍA
+   ==================================== */
 
 body {
     margin: 0;
@@ -8,6 +24,11 @@ body {
     overflow-x: hidden;
     width: 100%;
 }
+
+/* ====================================
+   NAVEGACIÓN Y HEADER
+   ==================================== */
+
 header {
     background-color: #009688; /* Verde moderno */
     width: 100%;
